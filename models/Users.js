@@ -22,24 +22,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 8,
     },
-    number: {
-      type: String,
-      required: true,
-    },
-    gender: {
-      type: String,
-      enum: ['male', 'female'],
-    },
-    role: {
-      type: String,
-      enum: ['user'],
-      default: 'user',
-    },
     refreshToken: String,
-    address: String,
-    city: String,
-    country: String,
-    photo: String,
   },
   {
     timestamps: true,

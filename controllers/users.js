@@ -22,11 +22,6 @@ exports.create = async (req, res) => {
       return res.status(409).json({ success: false, message: 'User already exists.' });
     }
 
-    // Getting url of the image
-    if (req.file) {
-      req.body.photo = req.file.path; // Creating a new property called photo in body object
-    }
-
     // Creating User
     req.body.password = bcrypt.hashSync(password, parseInt(bcryptSalt)); // Hashing the password with salt 8
     const user = await Users.create(req.body); // Adding user in db

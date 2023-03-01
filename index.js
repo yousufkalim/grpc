@@ -12,7 +12,7 @@ require('./database');
 require('./middleware/common')(app);
 
 // API Routes
-app.use('/api', require('./routes'));
+app.use('/api/v1', require('./routes'));
 
 // If we are in production mode, then we will use the cluster mode to create multiple processes
 if (NODE_ENV === 'prod') {
