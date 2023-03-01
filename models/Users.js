@@ -35,6 +35,7 @@ const userSchema = new mongoose.Schema(
       enum: ['user'],
       default: 'user',
     },
+    refreshToken: String,
     address: String,
     city: String,
     country: String,

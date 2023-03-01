@@ -6,7 +6,8 @@ const Users = require('../models/Users');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const bcryptSalt = process.env.BCRYPT_SALT || 10;
-const { ACCESS_TOKEN_SECRET } = process.env;
+const { REFRESH_TOKEN_SECRET } = process.env;
+const { generateAccessToken, generateRefreshToken } = require('../utils/generateTokens');
 
 /**
  * Login
@@ -36,14 +37,44 @@ exports.login = async (req, res) => {
 
     // Creating payload with user object
     delete user.password; // Removing password from user object
-    const payload = { user };
 
-    // Generating token
-    jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: '8h' }, (err, token) => {
-      if (err) throw err;
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+    user.refreshToken = refreshToken;
+    await user.save();
 
-      // done
-      res.json({ success: true, user, token });
+    res.json({ success: true, accessToken, refreshToken, user });
+  } catch (err) {
+    // Error handling
+    // eslint-disable-next-line no-console
+    console.log('Error ----> ', err);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+/**
+ * Generate new access token
+ * @param {object} req
+ * @param {object} res
+ */
+exports.token = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) return res.sendStatus(401);
+
+    const user = Users.find({ refreshToken, password: 0 });
+
+    if (!user) return res.sendStatus(404);
+
+    jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, decoded) => {
+      if (err) return res.sendStatus(403);
+
+      const accessToken = generateAccessToken(decoded.user);
+
+      res.json({
+        accessToken,
+      });
     });
   } catch (err) {
     // Error handling

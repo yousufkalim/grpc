@@ -3,7 +3,7 @@
  * @author Zain Asif
  */
 const jwt = require('jsonwebtoken');
-const {ACCESS_TOKEN_SECRET} = process.env;
+const { ACCESS_TOKEN_SECRET } = process.env;
 
 // Check auth
 exports.checkAuth = (req, res, next) => {

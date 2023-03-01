@@ -17,6 +17,7 @@ const { validateLogin, isValidated, changePasswordValidate } = require('../middl
 
 // Read
 router.post('/login', validateLogin, isValidated, auth.login); // Get all users at once
+router.post('/token', auth.token); // Get all users at once
 router.get('/', checkAuth, auth.confirmAuth);
 router.put(
   '/password/:userId',
